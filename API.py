@@ -1,16 +1,16 @@
-import requests
+import requests , html , random
 
-# Define the API endpoint
-url = "https://official-joke-api-appspot.com/random_joke"
+api_url = "https://opentdb.com/api.php?amount=1&category=9&type=multiple"
 
-#Send GET request to the API
-response = requests.get(url)
+def Get_Question():
+    response = requests.get(api_url)
+    if response.status_code == 200:
+        data = response.json()
+        return data['results']
 
-#Check if the request was successful
-if response.status_code == 200:
-    # Parse the JSON response
-    joke_data = response
-    joke_data = response.json()
-    print(f"Joke: {joke_data['setup']} - {joke_data['punchline']}")
-else:
-    print(f"Failed to retrive joke. Status code: {response.status_code}")
+q = Get_Question()
+print(q[0].get('question'))
+print(q[0].get('incorrect_answers')[0])
+print(q[0].get('correct_answer'))
+print(q[0].get('incorrect_answers')[1])
+print(q[0].get('incorrect_answers')[2])
