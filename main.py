@@ -1,69 +1,72 @@
-from doctest import Example
+#Change groq --> hf to use hugging face API
+#Change hf --> groq to use groq API
+from groq import generate_response as groq_generate_response
+#from groq import generate_response
 
-from groq import generate_response
-
-
-def run_activity():
-    print("ZERO-SHOT, ONE-SHOT AND FEW-SHOT LEARNING ACTIVITY")
-
-    category = input("Enter a category (e.g., 'animals', 'countries', 'fruits'): ")
-    item = input(f"Enter a specific {category} to classify: ").strip()
-
-    if not category or not item:
-        print("Error: Both category and item must be provided.")
+def reinforcement_learning_activity():
+    print("\n== Reinforcement Learning Activity ==\n")
+    prompt = input("Enter a prompt for the AI model (e.g., 'Describe the icon'):").strip()
+    if not prompt:
+        print("Please enter a prompt to learn the activity.")
         return
     
-    # Zero-Shot example
-    zero_shot = f"Is {item} a {category}? Answer with 'yes' or 'no'."
-    print("\nZero-Shot Learning:")
-    print(f"Response: {generate_response(zero_shot, temperature=0.3, max_tokens=1024)}")
+    initial_response = groq_generate_response(prompt, temperature=0.3, max_tokens=1024)
+    print(f"\nInitial AI Response:\n{initial_response}\n")
 
-    # One-Shot example
-    one_shot = f"""Example:
-
-    Category: animals
-    Item: dog
-    Answer: yes,dog is an animal.
-
-    Now you try:
-    Category: {category}
-    Item: {item}
-    Answer:"""
-    print("\nOne-Shot Learning:")
-    print(f"Response: {generate_response(one_shot, temperature=0.3, max_tokens=1024)}")
-
-    # Few-Shot example
-    few_shot = f"""Examples 1:
-
-    Category: animals
-    Item: dog
-    Answer: yes,dog is an animal.
-
-    Now you try:
-    Category: {category}
-    Item: {item}
-    Answer:"""
-    print("\nFew-Shot Learning:")
-    print(f"Response: {generate_response(few_shot, temperature=0.3, max_tokens=1024)}")
-
-    creative_prompt = f"""Example 1 : Word: moon
-
-Story: The moon winked at the lovers as they shared their first kiss.
-
-Word: {item}
-
-Story:"""
-    print("\n--- CREATIVE FEW-SHOT LEARNING ---")
-    print(f"Response: {generate_response(creative_prompt, temperature=0.7, max_tokens=1024)}")
-
-    #Reflection Questions
-    print("\n--- REFLECTION QUESTIONS ---")
-    print("1. How did the model's responses differ between zero-shot, one-shot, and few-shot prompts?")
-    print("2. Did the model understand the category and item correctly in each case?")  
-    print("3. How did the creative few-shot prompt influence the model's response compared to the more structured prompts?")
-
-if __name__ == "__main__":
-    run_activity()
-
-
+    # Rating + feedback loop
+    try:
+        rating = int(input("Rate the response on a scale of 1 (bad) to 5 (good): ").strip())
+        if rating < 1 or rating > 5:
+            print("Invalid rating. Using 3.")
+            rating = 3
+            return
+    except ValueError:
+        print("Invalid input. Using 3.")
+        rating = 3
+        return
     
+    feedback = input("Provide feedback to improve the response: ").strip()
+    improved_response = f"{initial_response} (improved based on feedback: {feedback})"
+    print(f"\nImproved AI Response:\n{improved_response}\n")
+    
+    print("\nReflection:")
+    print("1) How did the initial response meet your expectations?")
+    print("2) How did your feedback influence the improved response?")
+    
+    def role_based_prompt_activity():
+        print("\n== Role-Based Prompt Activity ==\n")
+        category = input("Enter a category (e.g , science,history,math): ").strip()
+        item = input(f"Enter an specific {category} topic (e.g., 'photosynthesis' for science): ").strip()
+    
+        if not category or not item:
+            print("Please enter both category and item to learn the activity.")
+            return
+        
+        teacher_prompt = f"Act as a teacher and explain {item} in simple terms."
+        expert_prompt = f"Act as an expert and provide a detailed explanation of {item}."
+    
+        teacher_response = groq_generate_response(teacher_prompt, temperature=0.3, max_tokens=1024)
+        expert_response = groq_generate_response(expert_prompt, temperature=0.3, max_tokens=1024)
+    
+        print(f"\nTeacher Response:\n{teacher_response}\n")
+        print(f"\nExpert Response:\n{expert_response}\n")
+    
+        print("\nReflection:")
+        print("1) How did the teacher response differ from the expert response?")
+        print("2) Which response did you find more helpful and why?")
+    
+    def run_activity():
+        print("\n== AI Prompting Activities ==\n")
+        print("Choose an activity:")
+        print("1. Reinforcement Learning")
+        print("2. Role-Based Prompting")
+        choice = input(">").strip()
+
+        if choice == "1":
+            reinforcement_learning_activity()
+        elif choice == "2":
+            role_based_prompt_activity()    
+        else:
+            print("Invalid choice. Please select 1 or 2.")
+    if __name__ == "__main__":
+    run_activity()  
